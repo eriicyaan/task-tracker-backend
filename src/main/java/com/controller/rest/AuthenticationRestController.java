@@ -1,18 +1,31 @@
 package com.controller.rest;
 
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.dto.UserCreateEditDto;
+import com.service.AuthenticationService;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequestMapping("api/auth")
+@RequiredArgsConstructor
 public class AuthenticationRestController {
 
+    private final AuthenticationService authenticationService;
 
     @PostMapping("/sign-up")
-    public void signUp() {
+    @ResponseStatus(HttpStatus.CREATED)
+    public void signUp(@RequestBody @Validated UserCreateEditDto user,
+                       HttpServletResponse response) {
+
+        String token = authenticationService.signUp(user);
+
+        response.addHeader("Authorization","Bearer " + token);
     }
 
 
