@@ -7,6 +7,7 @@ import com.service.UserService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,59 +17,69 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 
 
 @Component
 @RequiredArgsConstructor
-public class JwtFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
-    private UserService userService;
+    private final UserService userService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        String token = getToken(request.getHeader("Authorization"));
+        Cookie[] cookies = request.getCookies();
 
-        if(token == null) {
+        if (cookies == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        Claims claims = jwtService.extractClaims(token);
+        Cookie authorizationCookie = Arrays.stream(cookies)
+                .filter(cookie -> cookie.getName().equals("jwt_token"))
+                .findFirst()
+                .orElse(null);
 
+        String token = authorizationCookie == null
+                ? null
+                : authorizationCookie.getValue();
 
-        String email = claims.getSubject();
-        if(!checkTokenSubject(email)) {
+        if (token == null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        Claims claims;
+        try {
+            claims = jwtService.extractClaims(token);
+        } catch (Exception ex) {
+            throw new NotValidJwtTokenException("signature exception of token");
+        }
+
+        String username = claims.getSubject();
+        if (!checkTokenSubject(username)) {
             throw new NotValidJwtTokenException("token is not valid");
         }
 
         Date expirationDate = claims.getExpiration();
-        if(!checkExpireDate(expirationDate)) {
+        if (!checkExpireDate(expirationDate)) {
             throw new NotValidJwtTokenException("token is expired");
         }
 
-        new UsernamePasswordAuthenticationToken(
-                email,
-                null
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                username,
+                null,
+                Collections.emptyList()
         );
 
-
-//        SecurityContextHolder.getContext().setAuthentication(authenticaion);//TODO: сделать
-
+        SecurityContextHolder.getContext().setAuthentication(authToken);
         filterChain.doFilter(request, response);
-    }
-
-
-    private String getToken(String authorization) {
-        if(authorization == null || !authorization.contains("Bearer ")) {
-            return null;
-        }
-
-        return authorization.substring(7);
     }
 
 
@@ -80,12 +91,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
 
     private boolean checkTokenSubject(String subject) {
-        UserReadDto userByEmail = userService.findUserByEmail(subject);
+        UserReadDto userByEmail = userService.findUserByUsername(subject);
 
-        if(userByEmail == null) {
-            return false;
-        }
-
-        return true;
+        return userByEmail != null;
     }
 }

@@ -2,6 +2,7 @@ package com.service;
 
 
 import com.configuration.JwtProperties;
+import com.entity.UserRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -27,6 +28,8 @@ public class JwtService {
 
     public String generateJwtToken(String username) {
         HashMap<String, Object> claims = new HashMap<>();
+        claims.put("role", UserRole.USER.name());
+
         return createToken(claims, username);
     }
 
@@ -55,7 +58,6 @@ public class JwtService {
 
 
     private SecretKey getSignedKey() {
-        log.warn(jwtProperties.getSecret());
         return Keys.hmacShaKeyFor(jwtProperties.getSecret().getBytes(StandardCharsets.UTF_8));
     }
 }

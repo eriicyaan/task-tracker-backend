@@ -1,10 +1,13 @@
-jwt:
-  secret: ${JWT_SECRET}
-
-
 spring:
   datasource:
     username: postgres
     password: postgres
     url: jdbc:postgresql://localhost:5432/task_tracker_backend
     driver-class-name: org.postgresql.Driver
+#  config:
+#    import: optional:file:.env
+
+#jwt:
+#  secret: ${JWT_SECRET}
+jwt:
+  secret: ER4sm2uhClZJk x5eps6/66AOpQA/xrTyU4nZtu6DBpw=

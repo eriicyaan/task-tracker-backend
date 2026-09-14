@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserReadDto {
     private Long id;
-    private String email;
+    private String username;
 }

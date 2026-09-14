@@ -4,7 +4,7 @@
 --changeset create-users:1
 CREATE TABLE IF NOT EXISTS users (
     id BIGSERIAL PRIMARY KEY,
-    email VARCHAR(60) NOT NULL UNIQUE,
+    username VARCHAR(60) NOT NULL UNIQUE,
     password VARCHAR(128) NOT NULL,
     registration_date DATE NOT NULL
 );

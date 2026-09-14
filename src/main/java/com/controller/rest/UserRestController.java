@@ -19,7 +19,7 @@ public class UserRestController {
 
     @GetMapping
     public UserResponse getUser(@AuthenticationPrincipal UserDetails user) {
-        UserReadDto userReadDto = userService.findUserByEmail(user.getUsername());
+        UserReadDto userReadDto = userService.findUserByUsername(user.getUsername());
 
         return new UserResponse(userReadDto.getId(), user.getUsername());
     }
