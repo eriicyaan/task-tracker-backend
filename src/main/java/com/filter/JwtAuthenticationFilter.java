@@ -1,10 +1,11 @@
 package com.filter;
 
-import com.dto.UserReadDto;
+import com.entity.UserRole;
 import com.exception.NotValidJwtTokenException;
 import com.service.JwtService;
 import com.service.UserService;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -19,7 +20,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 
 
 @Component
@@ -27,7 +27,7 @@ import java.util.Date;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
-    private final UserService userService;
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -46,31 +46,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 .findFirst()
                 .orElse(null);
 
-        String token = authorizationCookie == null
-                ? null
-                : authorizationCookie.getValue();
-
-        if (token == null) {
+        if (authorizationCookie == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
+        String token = authorizationCookie.getValue();
+
         Claims claims;
         try {
             claims = jwtService.extractClaims(token);
+        } catch (ExpiredJwtException ex) {
+            throw new NotValidJwtTokenException("token is expired");
         } catch (Exception ex) {
-            throw new NotValidJwtTokenException("signature exception of token");
-        }
-
-        String username = claims.getSubject();
-        if (!checkTokenSubject(username)) {
             throw new NotValidJwtTokenException("token is not valid");
         }
 
-        Date expirationDate = claims.getExpiration();
-        if (!checkExpireDate(expirationDate)) {
-            throw new NotValidJwtTokenException("token is expired");
-        }
+        String username = claims.getSubject();
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                 username,
@@ -82,17 +74,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-
-    private boolean checkExpireDate(Date expirationDate) {
-        Date now = new Date(System.currentTimeMillis());
-
-        return !expirationDate.before(now);
-    }
-
-
-    private boolean checkTokenSubject(String subject) {
-        UserReadDto userByEmail = userService.findUserByUsername(subject);
-
-        return userByEmail != null;
-    }
 }

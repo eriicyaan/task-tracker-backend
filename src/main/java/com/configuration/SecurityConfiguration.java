@@ -32,7 +32,7 @@ public class SecurityConfiguration {
         http.authorizeHttpRequests(req ->
                 req
                         .requestMatchers("/api/auth/sign-up", "/api/auth/sign-in").permitAll()
-                        .requestMatchers("/api/auth/sign-out", "/api/tasks/**").authenticated()
+                        .requestMatchers("/api/auth/sign-out", "/api/tasks/**", "/api/user").authenticated()
         );
 
 
@@ -41,8 +41,6 @@ public class SecurityConfiguration {
 
         return http.build();
     }
-
-
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) {

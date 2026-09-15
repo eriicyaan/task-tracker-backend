@@ -3,16 +3,12 @@ package com.controller.rest;
 
 import com.dto.UserCreateEditDto;
 import com.dto.UserSignInDto;
+import com.dto.response.UserResponse;
 import com.service.AuthenticationService;
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,7 +34,7 @@ public class AuthenticationRestController {
     @PostMapping("/sign-in")
     @ResponseStatus(HttpStatus.OK)
     public void signIn(@RequestBody @Validated UserSignInDto user,
-                       HttpServletResponse response) {
+                               HttpServletResponse response) {
 
         String token = authenticationService.signIn(user);
         setJwtCookie(token, response);

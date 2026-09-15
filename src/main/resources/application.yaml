@@ -11,3 +11,7 @@ spring:
 #  secret: ${JWT_SECRET}
 jwt:
   secret: ER4sm2uhClZJk x5eps6/66AOpQA/xrTyU4nZtu6DBpw=
+logging:
+  level:
+    org.springframework.security: DEBUG
+

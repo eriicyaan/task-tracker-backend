@@ -3,12 +3,11 @@ package com.service;
 import com.dto.UserCreateEditDto;
 import com.dto.UserSignInDto;
 import com.exception.UserAlreadyExistsException;
-import com.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +18,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
 
+    @Transactional
     public String signUp(UserCreateEditDto user) {
         String email = user.getUsername();
 

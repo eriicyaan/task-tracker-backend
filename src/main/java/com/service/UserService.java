@@ -18,7 +18,6 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
