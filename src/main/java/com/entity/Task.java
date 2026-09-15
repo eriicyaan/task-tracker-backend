@@ -21,6 +21,7 @@ public class Task {
 
     private String body;
 
+    @Enumerated(EnumType.STRING)
     private TaskStatus status;
 
     private LocalDate doneAt;
