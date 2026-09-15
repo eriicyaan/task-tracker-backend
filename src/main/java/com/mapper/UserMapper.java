@@ -10,8 +10,8 @@ public class UserMapper implements Mapper<User, UserReadDto> {
     @Override
     public UserReadDto map(User object) {
         return UserReadDto.builder()
-                .username(object.getUsername())
                 .id(object.getId())
+                .username(object.getUsername())
                 .build();
     }
 }

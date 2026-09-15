@@ -3,7 +3,6 @@ package com.controller.rest;
 
 import com.dto.UserCreateEditDto;
 import com.dto.UserSignInDto;
-import com.dto.response.UserResponse;
 import com.service.AuthenticationService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;

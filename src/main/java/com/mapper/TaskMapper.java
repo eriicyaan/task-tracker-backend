@@ -11,6 +11,7 @@ public class TaskMapper implements Mapper<Task, TaskReadDto> {
     @Override
     public TaskReadDto map(Task object) {
         return TaskReadDto.builder()
+                .id(object.getId())
                 .header(object.getHeader())
                 .body(object.getBody())
                 .status(object.getStatus())

@@ -2,6 +2,7 @@ package com.handler.exception;
 
 
 import com.exception.NotValidJwtTokenException;
+import com.exception.TaskNotExistsException;
 import com.exception.UserAlreadyExistsException;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
@@ -42,6 +43,14 @@ public class GlobalExceptionHandler {
         );
     }
 
+
+    @ExceptionHandler(TaskNotExistsException.class)
+    public ProblemDetail handleTaskNotExistsException(TaskNotExistsException ex) {
+        return ProblemDetail.forStatusAndDetail(
+                HttpStatus.NOT_FOUND,
+                ex.getMessage()
+        );
+    }
 
 
     @ExceptionHandler(Exception.class)

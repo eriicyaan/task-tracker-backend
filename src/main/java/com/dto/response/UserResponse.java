@@ -1,5 +1,7 @@
 package com.dto.response;
 
-public record UserResponse(Long id,
+import java.util.UUID;
+
+public record UserResponse(UUID id,
                            String username) {
 }
