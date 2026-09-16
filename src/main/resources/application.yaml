@@ -4,6 +4,18 @@ spring:
     password: postgres
     url: jdbc:postgresql://localhost:5432/task_tracker_backend
     driver-class-name: org.postgresql.Driver
+
+
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092,localhost:9094
+      acks: all
+
+      properties:
+        enable.idempotence: true
+
+
+
 #  config:
 #    import: optional:file:.env
 
