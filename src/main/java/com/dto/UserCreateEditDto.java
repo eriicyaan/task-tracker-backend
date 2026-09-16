@@ -18,10 +18,11 @@ public class UserCreateEditDto {
     @NotNull
     @NotBlank
     @Email
+    @Length(max = 30)
     private String username;
 
     @NotNull
     @NotBlank
-    @Length(min = 6, max = 30)
+    @Length(min = 6, max = 50)
     private String password;
 }

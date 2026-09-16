@@ -3,8 +3,10 @@ package com.controller.rest;
 
 import com.dto.TaskCreateDto;
 import com.dto.TaskEditDto;
+import com.dto.TaskFieldUpdateDto;
 import com.dto.TaskReadDto;
 import com.dto.response.TaskResponse;
+import com.entity.TaskField;
 import com.mapper.TaskReadMapper;
 import com.service.TaskService;
 import lombok.RequiredArgsConstructor;
@@ -65,6 +67,16 @@ public class TaskRestController {
     }
 
 
+    @PatchMapping("/{id}/{field}")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateTaskField(@PathVariable UUID id,
+                                @PathVariable TaskField field,
+                                @RequestBody @Validated TaskFieldUpdateDto taskFieldUpdateDto) {
+
+        taskService.updateTaskField(id, field, taskFieldUpdateDto);
+    }
+
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTask(@PathVariable UUID id) {
@@ -72,7 +84,7 @@ public class TaskRestController {
     }
 
 
-    @PostMapping("/{id}")
+    @PatchMapping("/{id}/complete")
     public TaskResponse completeTask(@PathVariable UUID id) {
         TaskReadDto completedTask = taskService.completeTask(id);
 

@@ -1,14 +1,17 @@
 package com.handler.exception;
 
 
+import com.exception.FieldNotValidException;
 import com.exception.NotValidJwtTokenException;
 import com.exception.TaskNotExistsException;
 import com.exception.UserAlreadyExistsException;
 import io.jsonwebtoken.ExpiredJwtException;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -26,7 +29,7 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler({ExpiredJwtException.class, NotValidJwtTokenException.class})
-    public ProblemDetail handleNotValidJwtTokenException(Exception ex) {
+    public ProblemDetail handleJwtTokenException(Exception ex) {
         return ProblemDetail.forStatusAndDetail(
                 HttpStatus.UNAUTHORIZED,
                 ex.getMessage()
@@ -36,7 +39,7 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler({BadCredentialsException.class, InternalAuthenticationServiceException.class})
-    public ProblemDetail handleInternalAuthenticationServiceException() {
+    public ProblemDetail handleAuthenticationServiceException() {
         return ProblemDetail.forStatusAndDetail(
                 HttpStatus.UNAUTHORIZED,
                 "username or password is incorrect"
@@ -49,6 +52,15 @@ public class GlobalExceptionHandler {
         return ProblemDetail.forStatusAndDetail(
                 HttpStatus.NOT_FOUND,
                 ex.getMessage()
+        );
+    }
+
+
+    @ExceptionHandler({MethodArgumentNotValidException.class, FieldNotValidException.class})
+    public ProblemDetail handleValidationException() {
+        return ProblemDetail.forStatusAndDetail(
+                HttpStatus.UNPROCESSABLE_CONTENT,
+                "the value or path is not valid"
         );
     }
 

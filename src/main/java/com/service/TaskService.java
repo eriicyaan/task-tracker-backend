@@ -1,13 +1,12 @@
 package com.service;
 
-import com.dto.TaskCreateDto;
+import com.dto.*;
 
-import com.dto.TaskEditDto;
-import com.dto.TaskReadDto;
-import com.dto.UserReadDto;
 import com.entity.Task;
+import com.entity.TaskField;
 import com.entity.TaskStatus;
 import com.entity.User;
+import com.exception.FieldNotValidException;
 import com.exception.TaskNotExistsException;
 import com.mapper.TaskCreateMapper;
 import com.mapper.TaskMapper;
@@ -22,6 +21,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 
 @Service
@@ -71,9 +71,7 @@ public class TaskService {
     }
 
     public TaskReadDto updateTask(UUID id, TaskEditDto newTask) {
-        Task task = taskRepository
-                .findById(id)
-                .orElseThrow(() -> new TaskNotExistsException("task not exists"));
+        Task task = findTask(id);
 
         task.setHeader(newTask.getHeader());
         task.setBody(newTask.getBody());
@@ -84,19 +82,59 @@ public class TaskService {
     }
 
     public void deleteTask(UUID id) {
-        taskRepository.findById(id)
-                .orElseThrow(() -> new TaskNotExistsException("task not exists"));
+        findTask(id);
 
         taskRepository.deleteById(id);
     }
 
     public TaskReadDto completeTask(UUID id) {
-        Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new TaskNotExistsException("task not exists"));
+        Task task = findTask(id);
 
         task.setStatus(TaskStatus.COMPLETED);
         task.setCompletedAt(Instant.now());
 
         return taskMapper.map(task);
+    }
+
+    public void updateTaskField(UUID id,
+                                TaskField field,
+                                TaskFieldUpdateDto taskFieldUpdateDto) {
+        Task task = findTask(id);
+
+        switch (field) {
+            case HEADER -> updateHeader(task, taskFieldUpdateDto.value());
+            case BODY -> updateBody(task, taskFieldUpdateDto.value());
+            case STATUS -> updateStatus(task, taskFieldUpdateDto.value());
+        }
+
+    }
+
+
+    private void updateHeader(Task task, String value) {
+        if(value.length() > 50) {
+            throw new FieldNotValidException("the value length is too long");
+        }
+        task.setHeader(value);
+    }
+
+    private void updateBody(Task task, String value) {
+        if(value.length() > 255) {
+            throw new FieldNotValidException("the value length is too long");
+        }
+        task.setBody(value);
+    }
+
+    private void updateStatus(Task task, String value) {
+        try{
+            TaskStatus taskStatus = TaskStatus.valueOf(value.toUpperCase());
+            task.setStatus(taskStatus);
+        } catch (IllegalArgumentException e) {
+            throw new FieldNotValidException("the value is not valid");
+        }
+    }
+
+    private Task findTask(UUID id) {
+        return taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotExistsException("task not exists"));
     }
 }

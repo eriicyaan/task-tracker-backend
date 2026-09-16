@@ -18,6 +18,7 @@ public class UserSignInDto {
     @NotNull
     @NotBlank
     @Email
+    @Length(max = 50)
     private String username;
 
     @NotNull

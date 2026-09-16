@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 
 @Builder
@@ -18,10 +19,12 @@ public class TaskEditDto {
 
     @NotNull
     @NotBlank
+    @Length(max = 50)
     private String header;
 
     @NotNull
     @NotBlank
+    @Length(max = 255)
     private String body;
 
     @NotNull
