@@ -17,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -59,18 +61,12 @@ public class TaskService {
 
         Task createdTask = taskCreateMapper.map(task);
 
-        createdTask.setStatus(TaskStatus.CREATED);
+        createdTask.setStatus(TaskStatus.TODO);
         createdTask.setUser(user);
 
         Task savedTask = taskRepository.save(createdTask);
 
-        return TaskReadDto.builder()
-                .id(savedTask.getId())
-                .header(savedTask.getHeader())
-                .body(savedTask.getBody())
-                .status(savedTask.getStatus())
-                .doneAt(savedTask.getDoneAt())
-                .build();
+        return taskMapper.map(savedTask);
 
     }
 
@@ -82,7 +78,6 @@ public class TaskService {
         task.setHeader(newTask.getHeader());
         task.setBody(newTask.getBody());
         task.setStatus(newTask.getStatus());
-        task.setDoneAt(newTask.getDoneAt());
 
 
         return taskMapper.map(task);
@@ -93,5 +88,15 @@ public class TaskService {
                 .orElseThrow(() -> new TaskNotExistsException("task not exists"));
 
         taskRepository.deleteById(id);
+    }
+
+    public TaskReadDto completeTask(UUID id) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotExistsException("task not exists"));
+
+        task.setStatus(TaskStatus.COMPLETED);
+        task.setCompletedAt(Instant.now());
+
+        return taskMapper.map(task);
     }
 }

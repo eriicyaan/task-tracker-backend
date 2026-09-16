@@ -1,5 +1,7 @@
 package com.entity;
 
 public enum TaskStatus {
-    CREATED,
+    TODO,
+    IN_PROGRESS,
+    COMPLETED,
 }

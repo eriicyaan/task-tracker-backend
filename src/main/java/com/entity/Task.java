@@ -1,21 +1,20 @@
 package com.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "tasks")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
-public class Task {
+public class Task extends AuditEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -27,7 +26,7 @@ public class Task {
     @Enumerated(EnumType.STRING)
     private TaskStatus status;
 
-    private LocalDate doneAt;
+    private Instant completedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;

@@ -5,6 +5,7 @@ import com.dto.TaskCreateDto;
 import com.dto.TaskEditDto;
 import com.dto.TaskReadDto;
 import com.dto.response.TaskResponse;
+import com.mapper.TaskReadMapper;
 import com.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import java.util.UUID;
 public class TaskRestController {
 
     private final TaskService taskService;
+    private final TaskReadMapper taskReadMapper;
 
     @GetMapping
     public List<TaskResponse> getTasks(Authentication authentication) {
@@ -28,15 +30,7 @@ public class TaskRestController {
 
 
         return tasks.stream()
-                .map(task ->
-                        TaskResponse.builder()
-                                .id(task.getId())
-                                .header(task.getHeader())
-                                .body(task.getBody())
-                                .status(task.getStatus().name())
-                                .doneAt(task.getDoneAt())
-                                .build()
-                )
+                .map(taskReadMapper::map)
                 .toList();
     }
 
@@ -46,13 +40,7 @@ public class TaskRestController {
     public TaskResponse getTask(@PathVariable UUID id) {
         TaskReadDto task = taskService.findTaskById(id);
 
-        return TaskResponse.builder()
-                .id(task.getId())
-                .header(task.getHeader())
-                .body(task.getBody())
-                .status(task.getStatus().name())
-                .doneAt(task.getDoneAt())
-                .build();
+        return taskReadMapper.map(task);
     }
 
     @PostMapping
@@ -61,13 +49,7 @@ public class TaskRestController {
                                    Authentication authentication) {
         TaskReadDto createdTask = taskService.createTask(task, authentication.getName());
 
-        return TaskResponse.builder()
-                .id(createdTask.getId())
-                .header(createdTask.getHeader())
-                .body(createdTask.getBody())
-                .status(createdTask.getStatus().name())
-                .doneAt(createdTask.getDoneAt())
-                .build();
+        return taskReadMapper.map(createdTask);
 
     }
 
@@ -79,13 +61,7 @@ public class TaskRestController {
 
         TaskReadDto updatedTask = taskService.updateTask(id, task);
 
-        return TaskResponse.builder()
-                .id(updatedTask.getId())
-                .header(updatedTask.getHeader())
-                .body(updatedTask.getBody())
-                .status(updatedTask.getStatus().name())
-                .doneAt(updatedTask.getDoneAt())
-                .build();
+        return taskReadMapper.map(updatedTask);
     }
 
 
@@ -95,4 +71,11 @@ public class TaskRestController {
         taskService.deleteTask(id);
     }
 
+
+    @PostMapping("/{id}")
+    public TaskResponse completeTask(@PathVariable UUID id) {
+        TaskReadDto completedTask = taskService.completeTask(id);
+
+        return taskReadMapper.map(completedTask);
+    }
 }

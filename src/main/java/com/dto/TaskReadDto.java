@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -19,5 +20,7 @@ public class TaskReadDto {
     private String header;
     private String body;
     private TaskStatus status;
-    private LocalDate doneAt;
+    private Instant createdAt;
+    private Instant updatedAt;
+    private Instant completedAt;
 }
