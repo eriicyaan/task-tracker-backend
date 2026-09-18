@@ -1,6 +1,7 @@
 package com.configuration;
 
 
+import com.filter.InternalServiceAuthenticationFilter;
 import com.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final InternalServiceAuthenticationFilter internalServiceAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
@@ -33,10 +35,15 @@ public class SecurityConfiguration {
                 req
                         .requestMatchers("/api/auth/sign-up", "/api/auth/sign-in").permitAll()
                         .requestMatchers("/api/auth/sign-out", "/api/tasks/**", "/api/user").authenticated()
+                        .requestMatchers("/api/internal/**").hasAuthority("INTERNAL_SERVER")
+                        .anyRequest().authenticated()
         );
 
 
         http.addFilterBefore(jwtAuthenticationFilter,
+                UsernamePasswordAuthenticationFilter.class);
+
+        http.addFilterBefore(internalServiceAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
