@@ -44,6 +44,15 @@ public class TaskService {
                 .toList();
     }
 
+    public List<TaskReadDto> findAllTasks(UUID id) {
+        UserReadDto user = userService.findUserById(id);
+        List<Task> tasks = taskRepository.findAllByUserId(user.getId());
+
+        return tasks.stream()
+                .map(taskMapper::map)
+                .toList();
+    }
+
     public TaskReadDto findTaskById(UUID id) {
         Optional<Task> task = taskRepository.findById(id);
 

@@ -40,6 +40,11 @@ public class InternalServiceAuthenticationFilter extends OncePerRequestFilter {
 
         String providedSecretKey = request.getHeader("X-Internal-Service-Key");
 
+        if(providedSecretKey == null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         if(!MessageDigest.isEqual(
                 secretKey.getBytes(StandardCharsets.UTF_8),
                 providedSecretKey.getBytes(StandardCharsets.UTF_8))

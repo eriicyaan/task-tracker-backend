@@ -1,10 +1,7 @@
 package com.handler.exception;
 
 
-import com.exception.FieldNotValidException;
-import com.exception.NotValidJwtTokenException;
-import com.exception.TaskNotExistsException;
-import com.exception.UserAlreadyExistsException;
+import com.exception.*;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -61,6 +58,14 @@ public class GlobalExceptionHandler {
         return ProblemDetail.forStatusAndDetail(
                 HttpStatus.UNPROCESSABLE_CONTENT,
                 "the value or path is not valid"
+        );
+    }
+
+    @ExceptionHandler({UserNotFoundException.class})
+    public ProblemDetail handleUserNotFoundException(UserNotFoundException ex) {
+        return ProblemDetail.forStatusAndDetail(
+                HttpStatus.NOT_FOUND,
+                ex.getMessage()
         );
     }
 

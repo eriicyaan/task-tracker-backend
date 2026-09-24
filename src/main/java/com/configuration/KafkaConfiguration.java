@@ -21,49 +21,49 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@Configuration
-@RequiredArgsConstructor
-public class KafkaConfiguration {
-    private final Environment environment;
-
-
-
-    private Map<String, Object> getProducerConfig() {
-        HashMap<String, Object> config = new HashMap<>();
-
-        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, environment.getProperty("spring.kafka.producer.bootstrap-servers"));
-        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, UUIDSerializer.class);
-        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JacksonJsonSerializer.class);
-        config.put(ProducerConfig.ACKS_CONFIG, environment.getProperty("spring.kafka.producer.acks"));
-        config.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, environment.getProperty("spring.kafka.producer.properties.enable.idempotence"));
-
-        return config;
-    }
-
-
-    @Bean
-    ProducerFactory<UUID, UserCreatedEvent> producerFactory() {
-        return new DefaultKafkaProducerFactory<>(getProducerConfig());
-    }
-
-
-    @Bean
-    KafkaTemplate<UUID, UserCreatedEvent> kafkaTemplate() {
-        return new KafkaTemplate<>(producerFactory());
-    }
-
-
-    @Bean
-    NewTopic userCreatedEventTopic() {
-        return TopicBuilder
-                .name("user-created-event-topic")
-                .partitions(3)
-                .replicas(3)
-                .config("min.insync.replicas", "2")
-                .build();
-    }
-
-
-
-
-}
+//@Configuration
+//@RequiredArgsConstructor
+//public class KafkaConfiguration {
+//    private final Environment environment;
+//
+//
+//
+//    private Map<String, Object> getProducerConfig() {
+//        HashMap<String, Object> config = new HashMap<>();
+//
+//        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, environment.getProperty("spring.kafka.producer.bootstrap-servers"));
+//        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, UUIDSerializer.class);
+//        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JacksonJsonSerializer.class);
+//        config.put(ProducerConfig.ACKS_CONFIG, environment.getProperty("spring.kafka.producer.acks"));
+//        config.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, environment.getProperty("spring.kafka.producer.properties.enable.idempotence"));
+//
+//        return config;
+//    }
+//
+//
+//    @Bean
+//    ProducerFactory<UUID, UserCreatedEvent> producerFactory() {
+//        return new DefaultKafkaProducerFactory<>(getProducerConfig());
+//    }
+//
+//
+//    @Bean
+//    KafkaTemplate<UUID, UserCreatedEvent> kafkaTemplate() {
+//        return new KafkaTemplate<>(producerFactory());
+//    }
+//
+//
+//    @Bean
+//    NewTopic userCreatedEventTopic() {
+//        return TopicBuilder
+//                .name("user-created-event-topic")
+//                .partitions(3)
+//                .replicas(3)
+//                .config("min.insync.replicas", "2")
+//                .build();
+//    }
+//
+//
+//
+//
+//}

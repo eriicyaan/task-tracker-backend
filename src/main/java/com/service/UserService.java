@@ -4,6 +4,7 @@ import com.dto.UserCreateEditDto;
 import com.dto.UserReadDto;
 import com.entity.User;
 import com.event.UserCreatedEvent;
+import com.exception.UserNotFoundException;
 import com.mapper.UserCreateEditMapper;
 import com.mapper.UserMapper;
 import com.repository.UserRepository;
@@ -69,5 +70,11 @@ public class UserService implements UserDetailsService {
                         Collections.singleton(user.getRole()))
                 )
                 .orElseThrow();
+    }
+
+    public UserReadDto findUserById(UUID id) {
+        return Optional.of(userRepository.findUsersById(id))
+                .map(userMapper::map)
+                .orElseThrow(() -> new UserNotFoundException("user not found"));
     }
 }
