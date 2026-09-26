@@ -3,7 +3,7 @@ package com.handler.exception;
 
 import com.exception.*;
 import io.jsonwebtoken.ExpiredJwtException;
-import jakarta.validation.ConstraintViolationException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.security.authentication.BadCredentialsException;

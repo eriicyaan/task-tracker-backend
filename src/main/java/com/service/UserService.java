@@ -46,7 +46,7 @@ public class UserService implements UserDetailsService {
                 .map(userCreateEditMapper::map)
                 .map(userRepository::save)
                 .map(user -> new UserCreatedEvent(user.getId(), user.getUsername()))
-                .map(user -> kafkaTemplate.send("user-created-event-topic", user.getId(), user))
+                .map(user -> kafkaTemplate.send("email-sending-tasks", user.getId(), user))
                 .orElseThrow();
 
     }
@@ -73,8 +73,12 @@ public class UserService implements UserDetailsService {
     }
 
     public UserReadDto findUserById(UUID id) {
-        return Optional.of(userRepository.findUsersById(id))
-                .map(userMapper::map)
-                .orElseThrow(() -> new UserNotFoundException("user not found"));
+        User user = userRepository.findUsersById(id);
+
+        if(user == null) {
+            throw new UserNotFoundException("user not found");
+        }
+
+        return userMapper.map(user);
     }
 }

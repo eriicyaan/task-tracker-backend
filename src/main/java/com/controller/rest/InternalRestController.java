@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/internal")
+@RequestMapping("/api/internal/backend")
 @RequiredArgsConstructor
 public class InternalRestController {
 
