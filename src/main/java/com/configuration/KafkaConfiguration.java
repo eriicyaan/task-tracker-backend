@@ -1,11 +1,10 @@
 package com.configuration;
 
 
-import com.kafka.events.UserCreatedEvent;
+import com.kafka.events.EmailSendingEvent;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.common.serialization.UUIDSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,13 +40,13 @@ public class KafkaConfiguration {
 
 
     @Bean
-    ProducerFactory<UUID, UserCreatedEvent> producerFactory() {
+    ProducerFactory<UUID, EmailSendingEvent> producerFactory() {
         return new DefaultKafkaProducerFactory<>(getProducerConfig());
     }
 
 
     @Bean
-    KafkaTemplate<UUID, UserCreatedEvent> kafkaTemplate() {
+    KafkaTemplate<UUID, EmailSendingEvent> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 
@@ -57,8 +56,6 @@ public class KafkaConfiguration {
         return TopicBuilder
                 .name("user-created-event-topic")
                 .partitions(3)
-                .replicas(3)
-                .config("min.insync.replicas", "2")
                 .build();
     }
 
