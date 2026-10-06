@@ -10,7 +10,7 @@ spring:
 
 
   kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER}:9092
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER}
     producer:
       acks: all
       properties:
