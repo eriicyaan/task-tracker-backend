@@ -1,0 +1,7 @@
+package com.tasktracker.handler.exception;
+
+public class FieldNotValidException extends RuntimeException {
+    public FieldNotValidException(String message) {
+        super(message);
+    }
+}

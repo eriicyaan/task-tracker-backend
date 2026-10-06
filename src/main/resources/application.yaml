@@ -1,4 +1,6 @@
 spring:
+  liquibase:
+    change-log: classpath:db.changelog/db.changelog-master.yaml
   datasource:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
@@ -6,11 +8,11 @@ spring:
     driver-class-name: org.postgresql.Driver
 
 
-  kafka:
-    producer:
-      bootstrap-servers: localhost:9092
-      acks: all
 
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER}:9092
+    producer:
+      acks: all
       properties:
         enable.idempotence: true
 
