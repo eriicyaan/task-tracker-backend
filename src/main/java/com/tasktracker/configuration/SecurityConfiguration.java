@@ -3,9 +3,13 @@ package com.tasktracker.configuration;
 
 import com.tasktracker.filter.InternalServiceAuthenticationFilter;
 import com.tasktracker.filter.JwtAuthenticationFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ProblemDetail;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,6 +17,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import tools.jackson.databind.ObjectMapper;
 
 @Configuration
 @RequiredArgsConstructor
@@ -36,6 +41,23 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/auth/sign-out", "/api/tasks/**", "/api/user").authenticated()
                         .requestMatchers("/api/internal/**").hasAuthority("INTERNAL_SERVER")
                         .anyRequest().authenticated()
+        );
+
+        http.exceptionHandling(exception -> exception
+                .authenticationEntryPoint(
+                        (request, response, authException) -> {
+
+                            ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                                    HttpStatus.UNAUTHORIZED,
+                                    "not authenticated"
+                            );
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE);
+
+                            ObjectMapper objectMapper = new ObjectMapper();
+                            objectMapper.writeValue(response.getOutputStream(), problemDetail);
+                        }
+                )
         );
 
 

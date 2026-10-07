@@ -1,7 +1,7 @@
 package com.tasktracker.controller.rest;
 
 import com.tasktracker.dto.UserReadDto;
-import com.tasktracker.dto.response.UserResponse;
+import com.tasktracker.response.UserResponse;
 import com.tasktracker.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

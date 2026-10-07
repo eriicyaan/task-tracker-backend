@@ -3,9 +3,9 @@ package com.tasktracker.controller.rest;
 
 import com.tasktracker.dto.TaskReadDto;
 import com.tasktracker.dto.UserReadDto;
-import com.tasktracker.dto.response.TaskResponse;
-import com.tasktracker.dto.response.UserResponse;
 import com.tasktracker.mapper.TaskReadMapper;
+import com.tasktracker.response.TaskResponse;
+import com.tasktracker.response.UserResponse;
 import com.tasktracker.service.TaskService;
 import com.tasktracker.service.UserService;
 import lombok.RequiredArgsConstructor;
